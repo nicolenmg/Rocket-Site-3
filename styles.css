@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+
+/* Rocket launch site styles */
+:root{
+  --duration: 3500ms;
+  --bg-duration: 3500ms;
+  --rocket-size: 25vw;
+  --asteroid-size: 25vw;
+}
+html,body{height:100%;}
+body{
+  margin:0;
+  background: white;
+  transition: background-color var(--bg-duration) ease-in-out;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+  overflow:hidden;
+  color:#000;
+}
+body.launched{
+  background: #000;
+  color:#fff;
+}
+
+.scene-overlay{
+  position:fixed;
+  inset:0;
+  background: linear-gradient(180deg, #000 0%, #020c23 35%, #071a3d 100%);
+  opacity:0;
+  transition: opacity 1400ms ease;
+  z-index:0;
+}
+
+.scene-overlay::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.9) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 40% 55%, rgba(255,255,255,0.8) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 75% 28%, rgba(255,255,255,0.7) 0 1.2px, transparent 1.8px),
+    radial-gradient(circle at 65% 70%, rgba(255,255,255,0.8) 0 1.4px, transparent 2px),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0 1%, transparent 100%);
+  background-size: 300px 300px, 260px 260px, 340px 340px, 280px 280px, 100% 100%;
+  opacity:0.8;
+}
+
+body.show-scene .scene-overlay{
+  opacity:1;
+}
+
+.sky{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  z-index:1;
+}
+.rocket{
+  position:fixed;
+  left: 0;
+  bottom: 0;
+  width: var(--rocket-size);
+  height: auto;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 8px 8px rgba(0,0,0,0.25));
+  z-index: 5;
+}
+
+.rocket-svg{ display:block; width:100%; height:auto; }
+
+.rocket-emoji{
+  font-size: var(--rocket-size);
+  width: var(--rocket-size);
+  height: auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+  transform-origin:center center;
+}
+
+.welcome{
+  position:fixed;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  font-size: max(2.5rem, 4vw);
+  color:#fff;
+  opacity:0;
+  pointer-events:none;
+  z-index:20;
+  transition: opacity 700ms ease, transform 700ms ease;
+  text-align:center;
+}
+
+body.show-welcome .welcome{
+  opacity:1;
+  transform:translate(-50%,-52%);
+}
+
+.subwelcome{
+  position:fixed;
+  left:50%;
+  top: calc(50% + 7vh);
+  transform:translate(-50%,-50%);
+  font-family: 'Fredoka', 'Trebuchet MS', sans-serif;
+  font-size: max(1.5rem, 2.4vw);
+  color: #fff;
+  opacity:0;
+  pointer-events:none;
+  z-index:20;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 18px rgba(255,255,255,0.25);
+  text-align:center;
+  white-space: nowrap;
+  display:inline-block;
+  border-right: 2px solid rgba(255,255,255,0.8);
+  transition: opacity 500ms ease, transform 500ms ease;
+  transition-delay: 700ms;
+}
+
+body.show-welcome .subwelcome{
+  opacity:1;
+  transform:translate(-50%,-52%);
+}
+
+.tap-screen{
+  position:fixed;
+  left:50%;
+  bottom: 6vh;
+  transform:translateX(-50%);
+  font-family: 'Fredoka', 'Trebuchet MS', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.8rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  opacity:0;
+  pointer-events:none;
+  z-index:30;
+  transition: opacity 600ms ease;
+  transition-delay: 1800ms;
+  cursor:pointer;
+}
+
+body.show-scene .tap-screen{
+  opacity:1;
+  pointer-events:auto;
+}
+
+body.show-scene {
+  cursor: pointer;
+}
+
+.flash-overlay{
+  position:fixed;
+  inset:0;
+  background: radial-gradient(circle at center, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 18%, rgba(255,255,255,0.8) 30%, rgba(255,255,255,0.45) 48%, rgba(255,255,255,0) 72%);
+  opacity:0;
+  pointer-events:none;
+  z-index:40;
+  transition: opacity 180ms ease;
+}
+
+body.flash .flash-overlay{
+  opacity:1;
+}
+@keyframes fly {
+  0%{ transform: translateX(0) translateY(0); opacity:1 }
+  30%{ opacity:1 }
+  100%{ transform: translateX(calc(100vw + var(--rocket-size))) translateY(calc(-100vh - var(--rocket-size))); opacity:1 }
+}
+body.launched .rocket{
+  animation: fly var(--duration) linear forwards;
+}
+
+.asteroid{
+  position:fixed;
+  right: calc(100% + 14vw);
+  top: 18vh;
+  width: var(--asteroid-size);
+  height: var(--asteroid-size);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.1) 10%, transparent 12%),
+    radial-gradient(circle at 35% 35%, #d7d7d7 0%, #a7a7a7 20%, #707070 38%, #3d3d3d 62%, #1f1f1f 100%);
+  box-shadow:
+    inset -16px -16px 18px rgba(0,0,0,0.55),
+    inset 8px 8px 14px rgba(255,255,255,0.18),
+    0 0 30px rgba(255,255,255,0.15);
+  opacity:0;
+  z-index:4;
+  overflow:hidden;
+}
+
+.asteroid::before,
+.asteroid::after {
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  background: rgba(15,15,15,0.28);
+  box-shadow: inset 4px 4px 10px rgba(0,0,0,0.35);
+}
+
+.asteroid::before {
+  width: 28%;
+  height: 28%;
+  left: 18%;
+  top: 20%;
+}
+
+.asteroid::after {
+  width: 32%;
+  height: 32%;
+  right: 18%;
+  bottom: 18%;
+}
+
+body.launched .asteroid{
+  animation: asteroidFly 3100ms ease-in-out forwards;
+  animation-delay: 1800ms;
+}
+
+@keyframes asteroidFly {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.8);
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(140vw, 28vh, 0) scale(1.05);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  body.launched .rocket{ animation: none; transform: translateX(100vw) translateY(-100vh) }
+  body.launched .asteroid{ animation: none; opacity:1; transform: translateX(120vw) translateY(20vh) }
+}
